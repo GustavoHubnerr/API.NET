@@ -13,6 +13,7 @@ namespace API.csv.Controllers
     public class AnimaisController : ControllerBase
     {
         private DBContext _dbcontext;
+        private Animal novoAnimal;
 
         public AnimaisController(DBContext dbcontext)
         {
@@ -83,5 +84,44 @@ namespace API.csv.Controllers
 
         }
 
+        [HttpPut("AlterarTudo")]
+        public ActionResult<Animal> AlterarTudo(int id, [FromBody] Animal body)
+        {
+            Animal animal =
+                _dbcontext
+                .Animals.Find(a => a.Id == id);
+
+            if (animal == null)
+                return NotFound(); //404
+
+            animal.Name = body.Name;
+            animal.Classification = body.Classification;
+            animal.Origin = body.Origin;
+            animal.Reproduction = body.Reproduction;
+            animal.Feeding = body.Feeding;
+
+            return Ok(animal);
+        }
+
+        [HttpPost("Inserir")]
+        public ActionResult<Animal> Inserir(int id, [FromBody] Animal body)
+        {
+            if (body == null)
+                return BadRequest("os dados para a inserção não foram preenchidos"); //400
+
+
+            Animal novoAnimal = new Animal();
+            novoAnimal.Name = body.Name;
+            novoAnimal.Id = _dbcontext.Animals.Max(a => a.Id) + 1;
+            novoAnimal.Classification = body.Classification;
+            novoAnimal.Origin = body.Origin;
+            novoAnimal.Reproduction = body.Reproduction;
+            novoAnimal.Feeding = body.Feeding;
+
+            _dbcontext.Animals.Add(novoAnimal);
+
+            return Ok(novoAnimal);
+        }
+        
     }
 }

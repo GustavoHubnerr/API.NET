@@ -9,7 +9,5 @@
         public string Reproduction { get; set; }
         public string Feeding { get; set; }
 
-
-
     }
 }
